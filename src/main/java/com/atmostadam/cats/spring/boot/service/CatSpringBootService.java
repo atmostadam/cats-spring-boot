@@ -8,11 +8,14 @@ import com.atmostadam.cats.api.model.in.CatRequest;
 import com.atmostadam.cats.api.model.out.CatResponse;
 import com.atmostadam.cats.api.util.CatApiUtils;
 import com.atmostadam.cats.spring.boot.jpa.CatSpringBootRepository;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CatSpringBootService {
@@ -22,12 +25,20 @@ public class CatSpringBootService {
     public ResponseEntity<CatResponse> queryByMicrochipNumber(CatMicrochipRequest microchipRequest) {
         ResponseEntity<CatResponse> response;
         try {
-            Cat cat = CatApiUtils.switchCat(repository.querySingleRowByMicrochipNumber(microchipRequest
-                    .getMicrochip().getMicrochipNumber()));
-            response = CatApiUtils.successResponse(microchipRequest.getTransactionId(),
-                    "Successfully retrieved row with microchip number " + microchipRequest
-                            .getMicrochip().getMicrochipNumber(),
-                    List.of(cat));
+            CatEntity entity = repository.querySingleRowByMicrochipNumber(microchipRequest
+                    .getMicrochip().getMicrochipNumber());
+            if(Objects.nonNull(entity)) {
+                Cat cat = CatApiUtils.switchCat(entity);
+                response = CatApiUtils.successResponse(microchipRequest.getTransactionId(), String.format(
+                                "Successfully retrieved row with microchip number [%s]", microchipRequest
+                                        .getMicrochip().getMicrochipNumber()), List.of(cat));
+            } else {
+                response = new ResponseEntity<>(CatResponse.builder()
+                        .transactionId(microchipRequest.getTransactionId())
+                        .message(String.format("Unable to find cat with microchip number [%s]",
+                                microchipRequest.getMicrochip().getMicrochipNumber()))
+                        .build(), HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
             response = CatApiUtils.http500Response(microchipRequest.getTransactionId(), e, List.of());
         }

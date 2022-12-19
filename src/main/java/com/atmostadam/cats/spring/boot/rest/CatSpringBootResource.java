@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 
-import static com.atmostadam.cats.api.util.CatApiUtils.sneakyPrettyPrint;
+import static com.atmostadam.cats.api.util.CatApiUtils.prettyPrint;
 
 public class CatSpringBootResource implements CatResource {
     public static final Logger logger = LoggerFactory.getLogger(CatSpringBootResource.class);

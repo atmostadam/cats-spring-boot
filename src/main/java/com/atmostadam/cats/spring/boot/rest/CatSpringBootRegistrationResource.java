@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
-import javax.validation.Valid;
-
-import static com.atmostadam.cats.api.util.CatApiUtils.sneakyPrettyPrint;
+import static com.atmostadam.cats.api.util.CatApiUtils.*;
 
 public class CatSpringBootRegistrationResource implements CatRegistrationResource {
     public static final Logger logger = LoggerFactory.getLogger(CatSpringBootResource.class);
@@ -22,37 +20,33 @@ public class CatSpringBootRegistrationResource implements CatRegistrationResourc
 
     @Override
     public ResponseEntity<CatResponse> queryByMicrochipNumber(CatMicrochipRequest microchipRequest) {
-        logger.debug("HTTP METHOD: [{}], URI: [{}], REQUEST: [{}]", "GET", "/1.0/cat",
-                sneakyPrettyPrint(microchipRequest));
+        logger.debug(logRequestMessage("GET", "/1.0/cat", microchipRequest));
         ResponseEntity<CatResponse> response = service.queryByMicrochipNumber(microchipRequest);
-        logger.debug("RESPONSE: [{}]", sneakyPrettyPrint(response.getBody()));
+        logger.debug(logResponseMessage(response.getBody()));
         return response;
     }
 
     @Override
     public ResponseEntity<CatResponse> addCat(CatRequest request) {
-        logger.debug("HTTP METHOD: [{}], URI: [{}], REQUEST: [{}]", "GET", "/1.0/cat",
-                sneakyPrettyPrint(request));
+        logger.debug(logRequestMessage("POST", "/1.0/cat", request));
         ResponseEntity<CatResponse> response = service.insertSingleRow(request);
-        logger.debug("RESPONSE: [{}]", sneakyPrettyPrint(response.getBody()));
+        logger.debug(logResponseMessage(response.getBody()));
         return response;
     }
 
     @Override
     public ResponseEntity<CatResponse> updateCat(CatRequest request) {
-        logger.debug("HTTP METHOD: [{}], URI: [{}], REQUEST: [{}]", "GET", "/1.0/cat",
-                sneakyPrettyPrint(request));
+        logger.debug(logRequestMessage("PUT", "/1.0/cat", request));
         ResponseEntity<CatResponse> response = service.updateSingleRow(request);
-        logger.debug("RESPONSE: [{}]", sneakyPrettyPrint(response.getBody()));
+        logger.debug(logResponseMessage(response.getBody()));
         return response;
     }
 
     @Override
     public ResponseEntity<CatResponse> deleteCat(CatMicrochipRequest microchipRequest) {
-        logger.debug("HTTP METHOD: [{}], URI: [{}], REQUEST: [{}]", "GET", "/1.0/cat",
-                sneakyPrettyPrint(microchipRequest));
+        logger.debug(logRequestMessage("DELETE", "/1.0/cat", microchipRequest));
         ResponseEntity<CatResponse> response = service.deleteSingleRow(microchipRequest);
-        logger.debug("RESPONSE: [{}]", sneakyPrettyPrint(response.getBody()));
+        logger.debug(logResponseMessage(response.getBody()));
         return response;
     }
 }
