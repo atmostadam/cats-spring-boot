@@ -5,9 +5,10 @@
 
 	<groupId>com.atmostadam.cats</groupId>
 	<artifactId>cats-spring-boot</artifactId>
-	<version>0.0.2</version>
-	<name>Cats Test</name>
-	<description>Cats Test</description>
+	<version>${revision}</version>
+	<name>cats-spring-boot</name>
+	<description>Cats Spring Boot Implementation for Therapy Cat Charity Organization</description>
+	<url>atmostadam.com</url>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -16,14 +17,18 @@
 	</parent>
 
 	<properties>
+		<revision>0.0.33</revision>
 		<java.version>17</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jacoco.version>0.8.8</jacoco.version>
+		<faker.version>1.0.2</faker.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.atmostadam.cats</groupId>
 			<artifactId>cats-api</artifactId>
-			<version>0.0.2</version>
+			<version>${revision}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -43,9 +48,14 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.atmostadam.cats</groupId>
-			<artifactId>cats-test</artifactId>
-			<version>0.0.2</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.javafaker</groupId>
+			<artifactId>javafaker</artifactId>
+			<version>${faker.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -63,6 +73,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -70,4 +81,25 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>cats-api</id>
+			<url>https://maven.pkg.github.com/atmostadam/cats-api</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/atmostadam/cats-api</url>
+		</repository>
+	</distributionManagement>
 </project>

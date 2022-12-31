@@ -1,34 +1,31 @@
 package com.atmostadam.cats.spring.boot.service;
 
-import com.atmostadam.cats.api.exception.CatException;
-import com.atmostadam.cats.api.model.in.CatMicrochipRequest;
 import com.atmostadam.cats.api.model.out.CatResponse;
 import com.atmostadam.cats.spring.boot.configuration.CatSpringBootTestConfiguration;
 import com.atmostadam.cats.spring.boot.jpa.CatSpringBootRepository;
-import com.atmostadam.cats.test.data.CatMicrochipRequestTestData;
-import com.atmostadam.cats.test.data.CatResponseTestData;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import static com.atmostadam.cats.test.asserts.CatAsserts.*;
-import static com.atmostadam.cats.test.data.CatEntityTestData.staticCatEntity;
-import static com.atmostadam.cats.test.data.CatMicrochipRequestTestData.staticCatMicrochipRequest;
-import static com.atmostadam.cats.test.data.CatResponseTestData.staticCatResponse;
-import static com.atmostadam.cats.test.data.CatResponseTestData.staticCatResponse200;
+import java.util.List;
+
+import static com.atmostadam.cats.api.util.CatApiUtils.convertToJsonNode;
+import static com.atmostadam.cats.spring.boot.test.CatTestValues.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @SpringJUnitConfig(CatSpringBootTestConfiguration.class)
 public class CatSpringBootServiceTest {
+    private static final ObjectMapper om = new ObjectMapper();
+
     @InjectMocks
     CatSpringBootService service;
 
@@ -37,51 +34,43 @@ public class CatSpringBootServiceTest {
 
     @Test
     void queryByMicrochipNumber() {
-        when(repository.querySingleRowByMicrochipNumber(isA(Long.class))).thenReturn(staticCatEntity());
+        when(repository.querySingleRowByMicrochipNumber(isA(Long.class))).thenReturn(catEntityTestData());
 
-        ResponseEntity<CatResponse> actual = service.queryByMicrochipNumber(staticCatMicrochipRequest());
+        ResponseEntity<CatResponse> actual = service.queryByMicrochipNumber(TEST_REQUEST_ID, catRequestTestData());
 
-        assertEquals(actual, staticCatResponse200(
-                "Successfully retrieved row with microchip number [999999999999999]"));
+        assertEquals(HttpStatus.OK.value(), actual.getStatusCodeValue());
+        assertEquals(TEST_REQUEST_ID, actual.getHeaders().get("requestId").get(0));
+        assertEquals(MediaType.APPLICATION_JSON, actual.getHeaders().getContentType());
+        assertEquals(catResponseNodeTestData("Successfully retrieved row with microchip number [431654132132657]"),
+                convertToJsonNode(actual.getBody()));
     }
 
     @Test
     void queryByMicrochipNumber404() {
-        CatMicrochipRequest request = staticCatMicrochipRequest();
+        when(repository.querySingleRowByMicrochipNumber(isA(Long.class))).thenReturn(null);
 
-        CatResponse expectedCatResponse = CatResponse.builder()
-                .transactionId(request.getTransactionId())
-                .message("Unable to find cat with microchip number [999999999999999]")
-                .build();
-        ResponseEntity<CatResponse> expectedResponse = new ResponseEntity<>(expectedCatResponse, HttpStatus.NOT_FOUND);
+        ResponseEntity<CatResponse> actual = service.queryByMicrochipNumber(TEST_REQUEST_ID, catRequestTestData());
 
-        when(repository.querySingleRowByMicrochipNumber(isA(Long.class)))
-                .thenReturn(staticCatEntity());
-
-        ResponseEntity<CatResponse> response = service.queryByMicrochipNumber(request);
-
-        assertThat(response.getStatusCode(), Matchers.equalTo(expectedResponse.getStatusCode()));
-        assertThat(response.getBody().getTransactionId(), Matchers.equalTo(expectedResponse.getBody().getTransactionId()));
-        assertThat(response.getBody().getMessage(), Matchers.equalTo(expectedResponse.getBody().getMessage()));
-        assertThat(response.getBody().getStackTrace(), Matchers.equalTo(expectedResponse.getBody().getStackTrace()));
-        assertThat(response.getBody().getCats(), Matchers.equalTo(expectedResponse.getBody().getCats()));
+        assertEquals(HttpStatus.NOT_FOUND.value(), actual.getStatusCodeValue());
+        assertEquals(TEST_REQUEST_ID, actual.getHeaders().get("requestId").get(0));
+        assertEquals(MediaType.APPLICATION_JSON, actual.getHeaders().getContentType());
+        assertEquals(convertToJsonNode(
+                new CatResponse().setMessage("Unable to find cat with microchip number [431654132132657]")),
+                convertToJsonNode(actual.getBody()));
     }
 
     @Test
     void queryByMicrochipNumber500() {
-        RuntimeException exception = new RuntimeException("Http 500 Response");
+        when(repository.querySingleRowByMicrochipNumber(isA(Long.class))).thenThrow(TEST_CAT_EXCEPTION);
 
-        ResponseEntity<CatResponse> expectedResponse = new ResponseEntity<>(staticCatResponse(exception), HttpStatus.INTERNAL_SERVER_ERROR);
+        ResponseEntity<CatResponse> actual = service.queryByMicrochipNumber(TEST_REQUEST_ID, catRequestTestData());
 
-        when(repository.querySingleRowByMicrochipNumber(isA(Long.class))).thenThrow(exception);
-
-        ResponseEntity<CatResponse> response = service.queryByMicrochipNumber(staticCatMicrochipRequest());
-
-        assertThat(response.getStatusCode(), Matchers.equalTo(expectedResponse.getStatusCode()));
-        assertThat(response.getBody().getTransactionId(), Matchers.equalTo(expectedResponse.getBody().getTransactionId()));
-        assertThat(response.getBody().getMessage(), Matchers.equalTo(expectedResponse.getBody().getMessage()));
-        assertThat(response.getBody().getStackTrace(), Matchers.equalTo(expectedResponse.getBody().getStackTrace()));
-        assertThat(response.getBody().getCats(), Matchers.equalTo(expectedResponse.getBody().getCats()));
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), actual.getStatusCodeValue());
+        assertEquals(TEST_REQUEST_ID, actual.getHeaders().get("requestId").get(0));
+        assertEquals(MediaType.APPLICATION_JSON, actual.getHeaders().getContentType());
+        assertEquals(convertToJsonNode(
+                new CatResponse().setMessage(TEST_MESSAGE)),
+                convertToJsonNode(actual.getBody().setStackTrace(null)));
     }
 
     @Test
