@@ -34,7 +34,7 @@ jobs:
           servers: |
             [
               {
-                "id": "github",
+                "id": "cats-api",
                 "username": "${{ secrets.CATS_USERNAME }}",
                 "password": "${{ secrets.CATS_PASSWORD }}"
               }
