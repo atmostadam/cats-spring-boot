@@ -30,19 +30,20 @@ jobs:
       - name: Create settings.xml
         uses: s4u/maven-settings-action@v2.8.0
         with:
-          servers: |
-            [
-              {
-                "id": "github",
-                "username": "${{ secrets.CATS_USERNAME }}",
-                "password": "${{ secrets.CATS_PASSWORD }}"
-              },
-              {
-                "id": "cats-api",
-                "username": "${{ secrets.CATS_USERNAME }}",
-                "password": "${{ secrets.CATS_PASSWORD }}"
-              }
-            ]
+          setting-path:
+          servers:
+            - server: |
+                {
+                  "id": "github",
+                  "username": "${{ secrets.CATS_USERNAME }}",
+                  "password": "${{ secrets.CATS_PASSWORD }}"
+                }
+            - server: |
+                {
+                  "id": "cats-api",
+                  "username": "${{ secrets.CATS_USERNAME }}",
+                  "password": "${{ secrets.CATS_PASSWORD }}"
+                }
 
       - name: Publish to GitHub Packages
         run: mvn --batch-mode deploy
