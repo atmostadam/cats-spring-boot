@@ -97,9 +97,9 @@
 
 	<distributionManagement>
 		<repository>
-			<id>github</id>
+			<id>cats-spring-boot</id>
 			<name>GitHub Packages</name>
-			<url>https://maven.pkg.github.com/atmostadam/cats-api</url>
+			<url>https://maven.pkg.github.com/atmostadam/cats-spring-boot</url>
 		</repository>
 	</distributionManagement>
 </project>
