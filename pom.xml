@@ -17,12 +17,19 @@
 	</parent>
 
 	<properties>
-		<revision>0.0.33</revision>
+		<revision>0.0.36</revision>
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jacoco.version>0.8.8</jacoco.version>
 		<faker.version>1.0.2</faker.version>
 	</properties>
+
+	<developers>
+		<developer>
+			<name>Adam Johnston</name>
+			<url>atmostadam.com</url>
+		</developer>
+	</developers>
 
 	<dependencies>
 		<dependency>

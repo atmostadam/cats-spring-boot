@@ -7,8 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import static com.atmostadam.cats.spring.boot.test.CatTestValues.catEntityTestData;
-import static com.atmostadam.cats.spring.boot.test.CatTestValues.randomCatEntityTestData;
+import static com.atmostadam.cats.api.util.CatDefaultValues.catEntityTestData;
+import static com.atmostadam.cats.api.util.CatDefaultValues.catEntityTestData;
+import static com.atmostadam.cats.spring.boot.data.CatTestValues.randomCatEntityTestData;
 
 @SpringJUnitConfig(CatSpringBootTestConfiguration.class)
 class CatSpringBootRepositoryTest {

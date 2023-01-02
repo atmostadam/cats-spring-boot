@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.List;
 
 import static com.atmostadam.cats.api.util.CatApiUtils.convertToJsonNode;
-import static com.atmostadam.cats.spring.boot.test.CatTestValues.*;
+import static com.atmostadam.cats.api.util.CatDefaultValues.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.isA;
