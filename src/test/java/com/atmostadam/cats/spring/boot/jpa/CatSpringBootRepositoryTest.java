@@ -1,13 +1,10 @@
 package com.atmostadam.cats.spring.boot.jpa;
 
 import com.atmostadam.cats.spring.boot.configuration.CatSpringBootTestConfiguration;
-import com.github.javafaker.Faker;
-import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import static com.atmostadam.cats.api.util.CatDefaultValues.catEntityTestData;
 import static com.atmostadam.cats.api.util.CatDefaultValues.catEntityTestData;
 import static com.atmostadam.cats.spring.boot.data.CatTestValues.randomCatEntityTestData;
 

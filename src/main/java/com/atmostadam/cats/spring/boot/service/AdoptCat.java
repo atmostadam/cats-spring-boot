@@ -4,12 +4,17 @@ import com.atmostadam.cats.api.model.in.CatRequest;
 import com.atmostadam.cats.api.model.out.CatResponse;
 import com.atmostadam.cats.api.service.CatService;
 import com.atmostadam.cats.api.service.CatSpringBeanServiceNames;
+import com.atmostadam.cats.spring.boot.jpa.CatSpringBootRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-@Service(CatSpringBeanServiceNames.QUERY_BY_MICROSERVICE_NUMBER)
-public class QueryCat implements CatService {
+@Service(CatSpringBeanServiceNames.ADOPT_CAT)
+class AdoptCat implements CatService {
+    @Autowired
+    private CatSpringBootRepository repository;
+
     @Override
     public ResponseEntity<CatResponse> invoke(String requestId, CatRequest request) {
         return new CatResponse()

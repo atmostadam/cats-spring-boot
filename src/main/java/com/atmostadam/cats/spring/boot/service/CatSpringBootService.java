@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 @Service
+@Deprecated
 public class CatSpringBootService {
     @Autowired
     private CatSpringBootRepository repository;

@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-@Service(CatSpringBeanServiceNames.DELETE_CAT)
-public class DeleteCat implements CatService {
+@Service(CatSpringBeanServiceNames.MICROCHIP_CAT)
+class MicrochipCat implements CatService {
     @Autowired
     private CatSpringBootRepository repository;
 

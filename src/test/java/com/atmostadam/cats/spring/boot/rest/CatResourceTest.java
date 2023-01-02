@@ -1,6 +1,5 @@
 package com.atmostadam.cats.spring.boot.rest;
 
-import com.atmostadam.cats.api.configuration.CatConfiguration;
 import com.atmostadam.cats.api.model.in.CatRequest;
 import com.atmostadam.cats.api.model.out.CatResponse;
 import com.atmostadam.cats.api.rest.CatResource;
