@@ -3,7 +3,6 @@ package com.atmostadam.cats.spring.boot.service;
 import com.atmostadam.cats.api.model.out.CatResponse;
 import com.atmostadam.cats.spring.boot.configuration.CatSpringBootTestConfiguration;
 import com.atmostadam.cats.spring.boot.jpa.CatSpringBootRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -19,20 +18,18 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 
 @SpringJUnitConfig(CatSpringBootTestConfiguration.class)
-public class CatSpringBootServiceTest {
-    private static final ObjectMapper om = new ObjectMapper();
-
+public class QueryByMicrochipNumberTest {
     @InjectMocks
-    CatSpringBootService service;
+    QueryByMicrochipNumberCat service;
 
     @Mock
     CatSpringBootRepository repository;
 
     @Test
-    void queryByMicrochipNumber() {
+    void httpStatus200() {
         when(repository.querySingleRowByMicrochipNumber(isA(Long.class))).thenReturn(catEntityTestData());
 
-        ResponseEntity<CatResponse> actual = service.queryByMicrochipNumber(TEST_REQUEST_ID, catRequestTestData());
+        ResponseEntity<CatResponse> actual = service.invoke(TEST_REQUEST_ID, catRequestTestData());
 
         assertEquals(HttpStatus.OK.value(), actual.getStatusCodeValue());
         assertEquals(TEST_REQUEST_ID, actual.getHeaders().get("requestId").get(0));
@@ -42,10 +39,10 @@ public class CatSpringBootServiceTest {
     }
 
     @Test
-    void queryByMicrochipNumber404() {
+    void httpStatus404() {
         when(repository.querySingleRowByMicrochipNumber(isA(Long.class))).thenReturn(null);
 
-        ResponseEntity<CatResponse> actual = service.queryByMicrochipNumber(TEST_REQUEST_ID, catRequestTestData());
+        ResponseEntity<CatResponse> actual = service.invoke(TEST_REQUEST_ID, catRequestTestData());
 
         assertEquals(HttpStatus.NOT_FOUND.value(), actual.getStatusCodeValue());
         assertEquals(TEST_REQUEST_ID, actual.getHeaders().get("requestId").get(0));
@@ -56,10 +53,10 @@ public class CatSpringBootServiceTest {
     }
 
     @Test
-    void queryByMicrochipNumber500() {
+    void httpStatus500() {
         when(repository.querySingleRowByMicrochipNumber(isA(Long.class))).thenThrow(TEST_CAT_EXCEPTION);
 
-        ResponseEntity<CatResponse> actual = service.queryByMicrochipNumber(TEST_REQUEST_ID, catRequestTestData());
+        ResponseEntity<CatResponse> actual = service.invoke(TEST_REQUEST_ID, catRequestTestData());
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), actual.getStatusCodeValue());
         assertEquals(TEST_REQUEST_ID, actual.getHeaders().get("requestId").get(0));
@@ -67,20 +64,5 @@ public class CatSpringBootServiceTest {
         assertEquals(convertToJsonNode(
                 new CatResponse().setMessage(TEST_MESSAGE)),
                 convertToJsonNode(actual.getBody().setStackTrace(null)));
-    }
-
-    @Test
-    void insertSingleRow() {
-
-    }
-
-    @Test
-    void updateSingleRow() {
-
-    }
-
-    @Test
-    void deleteSingleRow() {
-
     }
 }
