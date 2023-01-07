@@ -9,6 +9,7 @@ import com.atmostadam.cats.spring.boot.jpa.CatSpringBootRepository;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class AddCat implements CatService {
         if (request.getCats().size() > 1) {
             return new CatResponse()
                     .setMessage("Client has provided multiple cats to Add! Bad Request!")
+                    .addCats(request.getCats())
                     .newResponseEntity(requestId, HttpStatus.BAD_REQUEST);
         }
 
@@ -40,15 +42,18 @@ public class AddCat implements CatService {
                     .setMessage(String.format("Successfully inserted row with microchip number [%s]", microchipNumber))
                     .addCat(cat)
                     .newResponseEntity(requestId, HttpStatus.OK);
-        } catch (ConstraintViolationException cve) {
+        } catch (DataIntegrityViolationException cve) {
             response = new CatResponse()
-                    .setMessage(String.format("Successfully inserted row with microchip number [%s]", microchipNumber))
+                    .setMessage("[DataIntegrityViolationException] while inserting row with microchip number [" +
+                                    microchipNumber + "] [microchipNumber already exists]")
+                    .setStackTrace(ExceptionUtils.getStackTrace(cve))
                     .addCat(cat)
-                    .newResponseEntity(requestId, HttpStatus.OK);
+                    .newResponseEntity(requestId, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             response = new CatResponse()
                     .setMessage(e.getMessage())
                     .setStackTrace(ExceptionUtils.getStackTrace(e))
+                    .addCat(cat)
                     .newResponseEntity(requestId, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return response;

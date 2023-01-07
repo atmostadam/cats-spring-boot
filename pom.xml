@@ -93,6 +93,7 @@
 		</plugins>
 	</build>
 
+	<!--
 	<profiles>
 		<profile>
 			<id>failsafe</id>
@@ -114,6 +115,7 @@
 			</build>
 		</profile>
 	</profiles>
+	-->
 
 	<repositories>
 		<repository>

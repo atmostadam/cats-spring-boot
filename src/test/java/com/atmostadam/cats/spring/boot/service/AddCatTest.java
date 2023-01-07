@@ -68,7 +68,10 @@ public class AddCatTest {
         assertEquals(TEST_REQUEST_ID, actual.getHeaders().get("requestId").get(0));
         assertEquals(MediaType.APPLICATION_JSON, actual.getHeaders().getContentType());
         assertEquals(convertToJsonNode(
-                new CatResponse().setMessage("Client has provided multiple cats to Add! Bad Request!")),
+                new CatResponse()
+                        .setMessage("Client has provided multiple cats to Add! Bad Request!")
+                        .addCat(catTestData())
+                        .addCat(catTestData())),
                 convertToJsonNode(actual.getBody()));
     }
 }
