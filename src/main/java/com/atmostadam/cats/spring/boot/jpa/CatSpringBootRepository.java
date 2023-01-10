@@ -15,7 +15,7 @@ import javax.transaction.Transactional;
 @Repository
 @EntityScan(basePackages = "com.atmostadam.cats.api")
 public class CatSpringBootRepository {
-    Logger logger = LoggerFactory.getLogger(CatSpringBootRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(CatSpringBootRepository.class);
 
     @PersistenceContext
     EntityManager entityManager;
